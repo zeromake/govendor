@@ -9,13 +9,13 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"strings"
 
-	"github.com/kardianos/govendor/context"
-	"github.com/kardianos/govendor/help"
-	"github.com/kardianos/govendor/prompt"
+	"github.com/zeromake/govendor/context"
+	"github.com/zeromake/govendor/help"
 )
 
-func (r *runner) Modify(w io.Writer, subCmdArgs []string, mod context.Modify, ask prompt.Prompt) (help.HelpMessage, error) {
+func (r *runner) Modify(w io.Writer, subCmdArgs []string, mod context.Modify) (help.HelpMessage, error) {
 	msg := help.MsgFull
 	switch mod {
 	case context.Add:
@@ -64,6 +64,7 @@ func (r *runner) Modify(w io.Writer, subCmdArgs []string, mod context.Modify, as
 	tree := listFlags.Bool("tree", false, "copy all folders including and under selected folder")
 	insecure := listFlags.Bool("insecure", false, "allow insecure network updates")
 	uncommitted := listFlags.Bool("uncommitted", false, "allows adding uncommitted changes. Doesn't update revision or checksum")
+	skip := listFlags.String("skip", "", "skip package path and sub package")
 	err = listFlags.Parse(subCmdArgs)
 	if err != nil {
 		return msg, err
@@ -107,7 +108,7 @@ func (r *runner) Modify(w io.Writer, subCmdArgs []string, mod context.Modify, as
 			return help.MsgNone, err
 		}
 	}
-	err = ctx.ModifyStatus(f.Status, mod, mops...)
+	err = ctx.ModifyStatus(f.Status, mod, strings.Split(*skip, ","), mops...)
 	if err != nil {
 		return help.MsgNone, err
 	}

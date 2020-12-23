@@ -14,10 +14,10 @@ import (
 	"net/http"
 	_ "net/http/pprof" // imported for side effect of registering handler
 
-	"github.com/kardianos/govendor/help"
+	"github.com/zeromake/govendor/help"
 
-	"github.com/Bowery/prompt"
 	"github.com/google/shlex"
+	"github.com/manifoldco/promptui"
 )
 
 func (r *runner) Shell(w io.Writer, subCmdArgs []string) (help.HelpMessage, error) {
@@ -38,7 +38,10 @@ func (r *runner) Shell(w io.Writer, subCmdArgs []string) (help.HelpMessage, erro
 	out := os.Stdout
 
 	for {
-		line, err := prompt.Basic("> ", false)
+		term := promptui.Prompt{
+			Label: "> ",
+		}
+		line, err := term.Run()
 		if err != nil {
 			break
 		}
@@ -59,7 +62,7 @@ func (r *runner) Shell(w io.Writer, subCmdArgs []string) (help.HelpMessage, erro
 		case "shell":
 			continue
 		}
-		msg, err := r.run(out, args, nil)
+		msg, err := r.run(out, args)
 		if err != nil {
 			fmt.Fprintf(out, "%v", err.Error())
 		}

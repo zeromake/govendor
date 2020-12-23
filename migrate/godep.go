@@ -11,8 +11,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kardianos/govendor/context"
-	"github.com/kardianos/govendor/vendorfile"
+	"github.com/zeromake/govendor/context"
+	"github.com/zeromake/govendor/vendorfile"
 )
 
 func init() {

@@ -15,10 +15,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kardianos/govendor/internal/pathos"
-	os "github.com/kardianos/govendor/internal/vos"
-	"github.com/kardianos/govendor/pkgspec"
-	"github.com/kardianos/govendor/vendorfile"
+	"github.com/zeromake/govendor/internal/pathos"
+	os "github.com/zeromake/govendor/internal/vos"
+	"github.com/zeromake/govendor/pkgspec"
+	"github.com/zeromake/govendor/vendorfile"
 )
 
 const (

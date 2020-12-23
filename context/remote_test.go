@@ -8,7 +8,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/kardianos/govendor/internal/gt"
+	"github.com/zeromake/govendor/internal/gt"
 )
 
 func TestFetchSimple(t *testing.T) {
@@ -252,7 +252,7 @@ func TestFetchAgain(t *testing.T) {
 	commitRev2, commitTime2 := remote.Setup().Commit()
 
 	g.In("co1")
-	g.Check(c.ModifyStatus(StatusGroup{Status: []Status{Status{Location: LocationVendor}}}, Fetch))
+	g.Check(c.ModifyStatus(StatusGroup{Status: []Status{Status{Location: LocationVendor}}}, Fetch, nil))
 	g.Check(c.Alter())
 	g.Check(c.WriteVendorFile())
 
@@ -323,7 +323,7 @@ s  strings < ["`+root+`B/C"]
 
 	// +outside
 	status := StatusGroup{Status: []Status{{Location: LocationExternal}, {Presence: PresenceMissing}}}
-	g.Check(c.ModifyStatus(status, Fetch))
+	g.Check(c.ModifyStatus(status, Fetch, nil))
 
 	g.Check(c.Alter())
 	g.Check(c.WriteVendorFile())

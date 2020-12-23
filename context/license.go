@@ -12,8 +12,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kardianos/govendor/internal/pathos"
 	"github.com/pkg/errors"
+	"github.com/zeromake/govendor/internal/pathos"
 )
 
 type License struct {

@@ -7,12 +7,14 @@ package cliprompt
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"strconv"
 	"strings"
 
-	"github.com/kardianos/govendor/prompt"
+	"github.com/zeromake/govendor/prompt"
 
-	cp "github.com/Bowery/prompt"
+	"github.com/manifoldco/promptui"
 )
 
 type Prompt struct{}
@@ -20,13 +22,13 @@ type Prompt struct{}
 // Ask the user a question based on the CLI.
 // TODO (DT): Currently can't handle fetching empty responses do to cancel method.
 func (p *Prompt) Ask(q *prompt.Question) (prompt.Response, error) {
-	term, err := cp.NewTerminal()
-	if err != nil {
-		return prompt.RespCancel, err
-	}
+	out := os.Stdout
+	// if err != nil {
+	// 	return prompt.RespCancel, err
+	// }
 
 	if len(q.Error) > 0 {
-		fmt.Fprintf(term.Out, "%s\n\n", q.Error)
+		fmt.Fprintf(out, "%s\n\n", q.Error)
 	}
 
 	switch q.Type {
@@ -35,49 +37,53 @@ func (p *Prompt) Ask(q *prompt.Question) (prompt.Response, error) {
 	case prompt.TypeSelectMultiple:
 		return prompt.RespCancel, fmt.Errorf("Selecting multiple isn't currently supported")
 	case prompt.TypeSelectOne:
-		return getSingle(term, q)
+		return getSingle(out, q)
 	}
 }
 
-func getSingle(term *cp.Terminal, q *prompt.Question) (prompt.Response, error) {
+func getSingle(out io.WriteCloser, q *prompt.Question) (prompt.Response, error) {
 	if len(q.Options) == 1 && q.Options[0].Other() {
 		opt := &q.Options[0]
 		opt.Chosen = true
-		return setOther(term, q, opt)
+		return setOther(out, q, opt)
 	}
 
 	chosen := q.AnswerSingle(false)
 	if chosen == nil {
-		return setOption(term, q)
+		return setOption(out, q)
 	}
-	resp, err := setOther(term, q, chosen)
+	resp, err := setOther(out, q, chosen)
 	if err != nil {
 		return prompt.RespCancel, err
 	}
 	if resp == prompt.RespCancel {
 		chosen.Chosen = false
-		return setOption(term, q)
+		return setOption(out, q)
 	}
 	return resp, nil
 }
 
-func setOther(term *cp.Terminal, q *prompt.Question, opt *prompt.Option) (prompt.Response, error) {
+func setOther(out io.WriteCloser, q *prompt.Question, opt *prompt.Option) (prompt.Response, error) {
 	var blankCount = 0
 	var internalMessage = ""
 	for {
 		// Write out messages
 		if len(internalMessage) > 0 {
-			fmt.Fprintf(term.Out, "%s\n\n", internalMessage)
+			fmt.Fprintf(out, "%s\n\n", internalMessage)
 		}
 		if len(q.Prompt) > 0 {
-			fmt.Fprintf(term.Out, "%s\n", q.Prompt)
+			fmt.Fprintf(out, "%s\n", q.Prompt)
 		}
 		if len(opt.Validation()) > 0 {
-			fmt.Fprintf(term.Out, "  ** %s\n", opt.Validation())
+			fmt.Fprintf(out, "  ** %s\n", opt.Validation())
 		}
 		// Reset message.
 		internalMessage = ""
-		ln, err := term.Basic(" > ", false)
+		term := promptui.Prompt{
+			Label: " > ",
+		}
+		ln, err := term.Run()
+		// ln, err := term.Basic(" > ", false)
 		if err != nil {
 			return prompt.RespCancel, err
 		}
@@ -95,26 +101,29 @@ func setOther(term *cp.Terminal, q *prompt.Question, opt *prompt.Option) (prompt
 	}
 }
 
-func setOption(term *cp.Terminal, q *prompt.Question) (prompt.Response, error) {
+func setOption(out io.WriteCloser, q *prompt.Question) (prompt.Response, error) {
 	var blankCount = 0
 	var internalMessage = ""
 	for {
 		// Write out messages
 		if len(internalMessage) > 0 {
-			fmt.Fprintf(term.Out, "%s\n\n", internalMessage)
+			fmt.Fprintf(out, "%s\n\n", internalMessage)
 		}
 		if len(q.Prompt) > 0 {
-			fmt.Fprintf(term.Out, "%s\n", q.Prompt)
+			fmt.Fprintf(out, "%s\n", q.Prompt)
 		}
 		for index, opt := range q.Options {
-			fmt.Fprintf(term.Out, " (%d) %s\n", index+1, opt.Prompt())
+			fmt.Fprintf(out, " (%d) %s\n", index+1, opt.Prompt())
 			if len(opt.Validation()) > 0 {
-				fmt.Fprintf(term.Out, "  ** %s\n", opt.Validation())
+				fmt.Fprintf(out, "  ** %s\n", opt.Validation())
 			}
 		}
 		// Reset message.
 		internalMessage = ""
-		ln, err := term.Basic(" # ", false)
+		term := promptui.Prompt{
+			Label: " # ",
+		}
+		ln, err := term.Run()
 		if err != nil {
 			return prompt.RespCancel, err
 		}
@@ -140,7 +149,7 @@ func setOption(term *cp.Terminal, q *prompt.Question) (prompt.Response, error) {
 		opt := &q.Options[index]
 		opt.Chosen = true
 		if opt.Other() {
-			res, err := setOther(term, q, opt)
+			res, err := setOther(out, q, opt)
 			if err != nil {
 				return prompt.RespCancel, err
 			}

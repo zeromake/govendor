@@ -14,9 +14,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/kardianos/govendor/internal/gt"
-	"github.com/kardianos/govendor/internal/pathos"
-	"github.com/kardianos/govendor/pkgspec"
+	"github.com/zeromake/govendor/internal/gt"
+	"github.com/zeromake/govendor/internal/pathos"
+	"github.com/zeromake/govendor/pkgspec"
 )
 
 var relVendorFile = filepath.Join("vendor", "vendor.json")
@@ -204,7 +204,7 @@ func TestDuplicatePackage(t *testing.T) {
 
 	g.Check(c.ModifyStatus(StatusGroup{
 		Status: []Status{{Location: LocationExternal}},
-	}, AddUpdate))
+	}, AddUpdate, nil))
 	g.Check(c.Alter())
 	g.Check(c.WriteVendorFile())
 
@@ -240,7 +240,7 @@ func TestDuplicatePackage(t *testing.T) {
 
 	g.Check(c.ModifyStatus(StatusGroup{
 		Status: []Status{{Location: LocationExternal}},
-	}, AddUpdate))
+	}, AddUpdate, nil))
 	c.ResloveApply(ResolveAutoLongestPath(c.Check())) // Automaically resolve conflicts.
 	g.Check(c.Alter())
 	g.Check(c.WriteVendorFile())
@@ -954,7 +954,7 @@ func TestTagList(t *testing.T) {
 
 	g.Check(c.ModifyStatus(StatusGroup{
 		Status: []Status{{Location: LocationExternal}},
-	}, AddUpdate))
+	}, AddUpdate, nil))
 	g.Check(c.Alter())
 
 	list(g, c, "after co1 before ignore", `

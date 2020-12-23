@@ -9,9 +9,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kardianos/govendor/context"
-	"github.com/kardianos/govendor/internal/pathos"
-	"github.com/kardianos/govendor/pkgspec"
+	"github.com/zeromake/govendor/context"
+	"github.com/zeromake/govendor/internal/pathos"
+	"github.com/zeromake/govendor/pkgspec"
 )
 
 var (

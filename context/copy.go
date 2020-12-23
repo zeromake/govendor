@@ -14,8 +14,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/kardianos/govendor/internal/pathos"
 	"github.com/pkg/errors"
+	"github.com/zeromake/govendor/internal/pathos"
 )
 
 type fileInfoSort []os.FileInfo

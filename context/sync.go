@@ -18,8 +18,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/kardianos/govendor/internal/pathos"
-	"github.com/kardianos/govendor/vendorfile"
+	"github.com/zeromake/govendor/internal/pathos"
+	"github.com/zeromake/govendor/vendorfile"
 
 	"golang.org/x/tools/go/vcs"
 )

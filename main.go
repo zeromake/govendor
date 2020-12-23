@@ -14,13 +14,12 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kardianos/govendor/cliprompt"
-	"github.com/kardianos/govendor/help"
-	"github.com/kardianos/govendor/run"
+	"github.com/zeromake/govendor/help"
+	"github.com/zeromake/govendor/run"
 )
 
 func main() {
-	prompt := &cliprompt.Prompt{}
+	// prompt := &cliprompt.Prompt{}
 
 	allArgs := os.Args
 
@@ -32,7 +31,7 @@ func main() {
 		}
 	}
 
-	msg, err := run.Run(os.Stdout, allArgs, prompt)
+	msg, err := run.Run(os.Stdout, allArgs)
 	if err == flag.ErrHelp {
 		err = nil
 	}

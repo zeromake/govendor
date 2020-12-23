@@ -18,12 +18,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kardianos/govendor/internal/pathos"
-	os "github.com/kardianos/govendor/internal/vos"
-	"github.com/kardianos/govendor/pkgspec"
-	"github.com/kardianos/govendor/vcs"
-	"github.com/kardianos/govendor/vendorfile"
 	"github.com/pkg/errors"
+	"github.com/zeromake/govendor/internal/pathos"
+	os "github.com/zeromake/govendor/internal/vos"
+	"github.com/zeromake/govendor/pkgspec"
+	"github.com/zeromake/govendor/vcs"
+	"github.com/zeromake/govendor/vendorfile"
 )
 
 // OperationState is the state of the given package move operation.
@@ -110,7 +110,7 @@ const (
 )
 
 // ModifyStatus adds packages to the context by status.
-func (ctx *Context) ModifyStatus(sg StatusGroup, mod Modify, mops ...ModifyOption) error {
+func (ctx *Context) ModifyStatus(sg StatusGroup, mod Modify, skip []string, mops ...ModifyOption) error {
 	if ctx.added == nil {
 		ctx.added = make(map[string]bool, 10)
 	}
@@ -130,6 +130,17 @@ statusLoop:
 			continue
 		}
 		// Do not add excluded packages
+		if len(skip) > 0 {
+			for _, s := range skip {
+				if strings.HasPrefix(item.Pkg.Path, s) {
+					continue statusLoop
+				}
+				if len(item.Pkg.Origin) > 0 && strings.HasPrefix(item.Pkg.Origin, s) {
+					continue statusLoop
+				}
+			}
+		}
+
 		if item.Status.Presence == PresenceExcluded {
 			continue
 		}

@@ -13,9 +13,8 @@ import (
 	"runtime"
 	"runtime/pprof"
 
-	"github.com/kardianos/govendor/context"
-	"github.com/kardianos/govendor/help"
-	"github.com/kardianos/govendor/prompt"
+	"github.com/zeromake/govendor/context"
+	"github.com/zeromake/govendor/help"
 )
 
 type nullWriter struct{}
@@ -39,11 +38,11 @@ func (r *runner) NewContextWD(rt context.RootType) (*context.Context, error) {
 
 // Run is isoloated from main and os.Args to help with testing.
 // Shouldn't directly print to console, just write through w.
-func Run(w io.Writer, appArgs []string, ask prompt.Prompt) (help.HelpMessage, error) {
+func Run(w io.Writer, appArgs []string) (help.HelpMessage, error) {
 	r := &runner{}
-	return r.run(w, appArgs, ask)
+	return r.run(w, appArgs)
 }
-func (r *runner) run(w io.Writer, appArgs []string, ask prompt.Prompt) (help.HelpMessage, error) {
+func (r *runner) run(w io.Writer, appArgs []string) (help.HelpMessage, error) {
 	if len(appArgs) == 1 {
 		return help.MsgFull, nil
 	}
@@ -95,7 +94,7 @@ func (r *runner) run(w io.Writer, appArgs []string, ask prompt.Prompt) (help.Hel
 		case "fetch":
 			mod = context.Fetch
 		}
-		return r.Modify(w, args[1:], mod, ask)
+		return r.Modify(w, args[1:], mod)
 	case "sync":
 		return r.Sync(w, args[1:])
 	case "status":

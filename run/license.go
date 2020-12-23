@@ -14,8 +14,8 @@ import (
 	"sort"
 	"text/template"
 
-	"github.com/kardianos/govendor/context"
-	"github.com/kardianos/govendor/help"
+	"github.com/zeromake/govendor/context"
+	"github.com/zeromake/govendor/help"
 )
 
 var defaultLicenseTemplate = `{{range $index, $t := .}}{{if ne $index 0}}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

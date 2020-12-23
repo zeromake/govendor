@@ -7,7 +7,7 @@ package help
 import (
 	"strings"
 
-	"github.com/kardianos/govendor/migrate"
+	"github.com/zeromake/govendor/migrate"
 )
 
 //go:generate govendor license -o licenses.go -template gen-license.template
@@ -98,7 +98,8 @@ var helpAdd = `govendor add [options] ( +status or import-path-filter )
 		-n           dry run and print actions that would be taken
 		-tree        copy package(s) and all sub-folders under each package
 		-uncommitted allows copying a package with uncommitted changes, doesn't
-		             update revision or checksum so it will always be out-of-date.
+					 update revision or checksum so it will always be out-of-date.
+		-skip        skip package prefix
 
 		The following may be replaced with something else in the future.
 		-short       if conflict, take short path

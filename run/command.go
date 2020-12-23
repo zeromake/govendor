@@ -12,9 +12,9 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/kardianos/govendor/context"
-	"github.com/kardianos/govendor/help"
-	"github.com/kardianos/govendor/migrate"
+	"github.com/zeromake/govendor/context"
+	"github.com/zeromake/govendor/help"
+	"github.com/zeromake/govendor/migrate"
 )
 
 func (r *runner) Init(w io.Writer, subCmdArgs []string) (help.HelpMessage, error) {
